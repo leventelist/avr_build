@@ -1,0 +1,6 @@
+avr-libc
+binutils-gdb
+gcc
+out
+avr-gcc-build.log
+*.tar.bz2
