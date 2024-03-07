@@ -64,7 +64,7 @@ COMMIT_BINUTILS="binutils-2_42"
 COMMIT_GDB="gdb-14.1-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
-COMMIT_GCC="14ba8d5b87acd5f91ab8b8c02165a0fd53dcc2f2"
+COMMIT_GCC="9f915684624413f96e1a5ffada398ccd1c533e38"
 
 NAME_LIBC="https://github.com/avrdudes/avr-libc.git"
 COMMIT_LIBC="22d588c80066102993263018d5324d1424c13f0d"
