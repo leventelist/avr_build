@@ -61,13 +61,13 @@ BUILD_LIBC=${BUILD_LIBC:-1}
 
 NAME_BINUTILS_GDB="git://sourceware.org/git/binutils-gdb.git"
 COMMIT_BINUTILS="binutils-2_42"
-COMMIT_GDB="gdb-14.1-release"
+COMMIT_GDB="gdb-14.2-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
-COMMIT_GCC="9f915684624413f96e1a5ffada398ccd1c533e38"
+COMMIT_GCC="f4f7c52472fa59993024e70848559d8bac2167ba"
 
 NAME_LIBC="https://github.com/avrdudes/avr-libc.git"
-COMMIT_LIBC="22d588c80066102993263018d5324d1424c13f0d"
+COMMIT_LIBC="45b68260bdaa6ea336106502836d6b1a49dabc6b"
 
 HERE=`pwd`
 DIR=""
