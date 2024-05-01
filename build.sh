@@ -37,10 +37,11 @@
 #
 # I use this to compile the following components:
 #
-# GCC 14 (develop version)
+# GCC 14
 # binutils
 # gdb
 # avr-libc 2.2 (develop version)
+# AVRDUDE 7.3
 
 JOBCOUNT=${JOBCOUNT:-$(getconf _NPROCESSORS_ONLN)}
 
@@ -59,18 +60,27 @@ BUILD_GCC=${BUILD_GCC:-1}
 # Build AVR-LibC (requires AVR-GCC)
 BUILD_LIBC=${BUILD_LIBC:-1}
 
+# Build AVRDUDE
+BUILD_AVRDUDE=${BUILD_AVRDUDE:-1}
+
 NAME_BINUTILS_GDB="git://sourceware.org/git/binutils-gdb.git"
 COMMIT_BINUTILS="binutils-2_42"
 COMMIT_GDB="gdb-14.2-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
-COMMIT_GCC="f4f7c52472fa59993024e70848559d8bac2167ba"
+COMMIT_GCC="9ccb16d032e3c2f72adff24ddb38c7f0e5079aec"
 
 NAME_LIBC="https://github.com/avrdudes/avr-libc.git"
-COMMIT_LIBC="45b68260bdaa6ea336106502836d6b1a49dabc6b"
+COMMIT_LIBC="73b8bd8f3385e7e829478b0b7a75bf5e1639d0c5"
+
+NAME_AVRDUDE="https://github.com/avrdudes/avrdude.git"
+COMMIT_AVRDUDE="v7.3"
 
 HERE=`pwd`
 DIR=""
+
+LOG_DIR=$HERE
+LOGFILE=$LOG_DIR/avr-toolchain-build.log
 
 # Output locations for built toolchains
 PREFIX=$HERE/out
@@ -112,6 +122,8 @@ OPTS_GCC="
 "
 
 OPTS_LIBC="--host=avr"
+
+OPTS_AVRDUDE=""
 
 # Parse command line options
 OPTIONS="k"
@@ -159,11 +171,10 @@ export CC
 
 TIME_START=$(date +%s)
 
-LOG_DIR=$(pwd)
 log()
 {
 	echo -e "$1"
-	echo "[$(date +"%d %b %y %H:%M:%S")]: $1" >> "$LOG_DIR/avr-gcc-build.log"
+	echo "[$(date +"%d %b %y %H:%M:%S")]: $1" >> $LOGFILE
 }
 
 makeDir()
@@ -216,8 +227,20 @@ confMake()
 	fi
 }
 
+confCmake()
+{
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$1 $2 $3
+	log "Compiling..."
+	nice -n ${NICE} make -j $JOBCOUNT
+	make install
+	if [ $KEEP -eq 0 ]; then
+		rm -rf *
+	fi
+}
+
 #Main program starts here
 
+rm -f $LOGFILE
 log "Start"
 log "Creating output directory..."
 makeDir "$PREFIX"
@@ -229,7 +252,6 @@ if [ $BUILD_BINUTILS -eq 1 ]; then
 	cd $DIR
 	mkdir -p obj-avr
 	cd obj-avr
-	echo $OPTS_BINUTILS
 	confMake "$PREFIX" "$OPTS_BINUTILS"
 	cd $HERE
 else
@@ -274,6 +296,19 @@ if [ $BUILD_LIBC -eq 1 ]; then
 	cd $HERE
 else
 	log "Skipping AVR-LibC..."
+fi
+
+# Make AVRDUDE
+if [ $BUILD_AVRDUDE -eq 1 ]; then
+	log "***AVRDUDE***"
+	get_source $NAME_AVRDUDE $COMMIT_AVRDUDE
+	cd $DIR
+	mkdir -p obj-avr
+	cd obj-avr
+	confCmake "$PREFIX" "$OPTS_AVRDUDE"
+	cd $HERE
+else
+	log "Skipping AVRDUDE..."
 fi
 
 TIME_END=$(date +%s)
