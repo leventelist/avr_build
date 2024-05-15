@@ -68,10 +68,10 @@ COMMIT_BINUTILS="binutils-2_42"
 COMMIT_GDB="gdb-14.2-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
-COMMIT_GCC="9ccb16d032e3c2f72adff24ddb38c7f0e5079aec"
+COMMIT_GCC="fcdd723779f9ad9af9638e11ffe56786de2d02ce"
 
 NAME_LIBC="https://github.com/avrdudes/avr-libc.git"
-COMMIT_LIBC="73b8bd8f3385e7e829478b0b7a75bf5e1639d0c5"
+COMMIT_LIBC="b5b42a02bebba153e03dce6bec4e0abcb1e5362a"
 
 NAME_AVRDUDE="https://github.com/avrdudes/avrdude.git"
 COMMIT_AVRDUDE="v7.3"
