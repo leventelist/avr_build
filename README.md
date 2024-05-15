@@ -8,8 +8,8 @@ I wanted to build a toolchain that has support for the new AVR-Dx devices
 
 ## Usage
 
-You may edit the file the set new git hashes, but pretty much all you have to do
-is run the script. The script will fail if any of the dependencies are missing.
+You may edit the build.sh file to set new git hashes, but pretty much all you have to do
+is run the script. The script will fail if any of the depencies are missing.
 
 ## Origin
 
