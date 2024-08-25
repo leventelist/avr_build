@@ -64,17 +64,18 @@ BUILD_LIBC=${BUILD_LIBC:-1}
 BUILD_AVRDUDE=${BUILD_AVRDUDE:-1}
 
 NAME_BINUTILS_GDB="git://sourceware.org/git/binutils-gdb.git"
-COMMIT_BINUTILS="binutils-2_42"
-COMMIT_GDB="gdb-14.2-release"
+COMMIT_BINUTILS="binutils-2_43_1"
+COMMIT_GDB="gdb-15.1-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
-COMMIT_GCC="fcdd723779f9ad9af9638e11ffe56786de2d02ce"
+COMMIT_GCC="releases/gcc-14.2.0"
 
 NAME_LIBC="https://github.com/avrdudes/avr-libc.git"
-COMMIT_LIBC="b5b42a02bebba153e03dce6bec4e0abcb1e5362a"
+COMMIT_LIBC="avr-libc-2_2_1-release"
 
 NAME_AVRDUDE="https://github.com/avrdudes/avrdude.git"
-COMMIT_AVRDUDE="v7.3"
+COMMIT_AVRDUDE="v8.0"
+PATCH_D_AVRDUDE="avrdude_patches"
 
 HERE=`pwd`
 DIR=""
@@ -123,7 +124,7 @@ OPTS_GCC="
 
 OPTS_LIBC="--host=avr"
 
-OPTS_AVRDUDE=""
+OPTS_AVRDUDE="-DPYTHON_SITE_PACKAGES=python"
 
 # Parse command line options
 OPTIONS="k"
@@ -206,6 +207,7 @@ get_source()
 	cd $DIR_NAME
 	git checkout $COMMIT
 	if [ $KEEP -eq 0 ]; then
+		git reset --hard
 		git clean -xffd
 		git clean -Xffd
 	fi
@@ -229,7 +231,7 @@ confMake()
 
 confCmake()
 {
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$1 $2 $3
+	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$1 $2 $3
 	log "Compiling..."
 	nice -n ${NICE} make -j $JOBCOUNT
 	make install
@@ -237,6 +239,16 @@ confCmake()
 		rm -rf *
 	fi
 }
+
+apply_patches()
+{
+	log "Applying patches..."
+	for PATCH in ../$1/*; do
+		echo $PATCH
+		git apply $PATCH
+	done
+}
+
 
 #Main program starts here
 
@@ -303,6 +315,7 @@ if [ $BUILD_AVRDUDE -eq 1 ]; then
 	log "***AVRDUDE***"
 	get_source $NAME_AVRDUDE $COMMIT_AVRDUDE
 	cd $DIR
+	apply_patches $PATCH_D_AVRDUDE
 	mkdir -p obj-avr
 	cd obj-avr
 	confCmake "$PREFIX" "$OPTS_AVRDUDE"
