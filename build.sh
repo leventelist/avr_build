@@ -65,7 +65,7 @@ BUILD_AVRDUDE=${BUILD_AVRDUDE:-1}
 
 NAME_BINUTILS_GDB="git://sourceware.org/git/binutils-gdb.git"
 COMMIT_BINUTILS="binutils-2_43_1"
-COMMIT_GDB="gdb-15.1-release"
+COMMIT_GDB="gdb-16.1-release"
 
 NAME_GCC="git://gcc.gnu.org/git/gcc.git"
 COMMIT_GCC="releases/gcc-14.2.0"
